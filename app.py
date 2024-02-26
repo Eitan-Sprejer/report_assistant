@@ -8,7 +8,8 @@ from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 import streamlit as st
 # Set the working dir as the relative file path
-WORKING_DIR = os.path.relpath(os.path.dirname(__file__))
+# WORKING_DIR = os.path.relpath(os.path.dirname(__file__))
+WORKING_DIR = os.path.dirname(__file__)
 OPENAI_API_KEY = st.secrets["OPENAI_KEY"]
 client = OpenAI(api_key=OPENAI_API_KEY) 
 
