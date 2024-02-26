@@ -7,9 +7,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 import streamlit as st
-
-load_dotenv(find_dotenv())
-
+WORKING_DIR = os.path.dirname(__file__)
 OPENAI_API_KEY = st.secrets["OPENAI_KEY"]
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -27,7 +25,7 @@ def transcribe_audio(audio_file_path):
 # Step 2: Get the report with GPT-3.5
 
 def get_report(transcript):
-    with open('instructions_V0.md', 'r') as f:
+    with open(os.path.join(WORKING_DIR, 'instructions_V0.md'), 'r') as f:
         prompt_text = f.read()
     print(prompt_text)
     prompt = PromptTemplate(
