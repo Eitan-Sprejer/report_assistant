@@ -7,9 +7,10 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 import streamlit as st
-WORKING_DIR = os.path.dirname(__file__)
+# Set the working dir as the relative file path
+WORKING_DIR = os.path.relpath(os.path.dirname(__file__))
 OPENAI_API_KEY = st.secrets["OPENAI_KEY"]
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY) 
 
 # Step 1: Transcribe the audio files
 def transcribe_audio(audio_file_path):
@@ -63,7 +64,7 @@ def main():
         with st.spinner('Writing report...'):
             report = get_report(joined_transcripts)
         with st.expander('Show Report'):
-            st.write("Report:", report)
+            st.write("Report:\n", report)
 
 if __name__ == "__main__":
     main()
