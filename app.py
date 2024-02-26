@@ -58,7 +58,7 @@ def get_report(transcript):
 def main():
     st.title("Transcription and Report Generation")
     st.write("This app transcribes audio files and generates a report based on the transcription.")
-    audio_files = st.file_uploader("Upload all audio files for the report, in order.", type=["mp3", "flac"], accept_multiple_files=True)
+    audio_files = st.file_uploader("Upload all audio files for the report, in order.", type=["mp3", "flac", "ogg"], accept_multiple_files=True)
     # Create a button to transcribe the audio files
     transcribe_button = st.button("Done uploading files! Transcribe and Generate Report.")
     st.session_state.transcripts = []
