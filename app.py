@@ -10,14 +10,15 @@ import streamlit as st
 
 load_dotenv(find_dotenv())
 
-OPENAI_API_KEY = os.environ.get('OPENAI_KEY')
+OPENAI_API_KEY = st.secrets["OPENAI_KEY"]
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Step 1: Transcribe the audio files
-def transcribe_audio(audio_file):
-    audio_file = open("testing.mp3", "rb")
+def transcribe_audio(audio_file_path):
+    audio_file = open(audio_file_path, "rb")
     transcript = client.audio.transcriptions.create(
         model="whisper-1", 
+        language='es',
         file=audio_file, 
         response_format="text"
         )
@@ -41,8 +42,6 @@ def get_report(transcript):
     report = chain.predict(transcription=transcript)
     print(report)
     return report
-# transcript_test = "Bueno, pasamos por lo de Claudio y nos encontramos con otro chico que no conocíamos que se llama Fede Nos contó que Claudio está trabajando, creo que hace un horario de 9 a 1 y media, 2 de la mañana Está en la posición de bachero y contaba este chico Federico que se estaba quedando con ellos porque también le habían conseguido un puesto de trabajo en otro Kentucky por floresta Este chico Federico debe rondar los 30 años, 30 y algo de años Contó que hace bastante que está en situación de calle y básicamente porque se fue de su casa Nos contó que le encantan los animales y que se juntó con Claudio y con Sergio porque Sergio lo conoce del lugar donde se van a bañar ¿Cómo se llama el lugar? ¿Ahí tú te acordás? Bueno, que no lo recordamos Él antes de parar acá, paraba en el seat campeador."
-# report = get_report(transcript_test)
 
 # Step 3: Build a streamlit app.
 def main():
@@ -51,17 +50,20 @@ def main():
     audio_files = st.file_uploader("Upload all audio files for the report, in order.", type=["mp3", "flac"], accept_multiple_files=True)
     # Create a button to transcribe the audio files
     transcribe_button = st.button("Done uploading files! Transcribe and Generate Report.")
+    st.session_state.transcripts = []
     if transcribe_button:
-        transcripts = []
         for i, audio_file in enumerate(audio_files):
-            with st.spinner(f'Transcribing audio {i}...'):
-                transcript = transcribe_audio(audio_file)
-                transcripts.append(transcript)
-        joined_transcripts = "\n\n".join(transcripts)
+            # Save audio file
+            with open(audio_file.name, "wb") as f:
+                f.write(audio_file.read())
+            with st.spinner(f'Transcribing audio {i + 1}...'):
+                transcript = transcribe_audio(audio_file.name)
+                st.session_state.transcripts.append(transcript)
+        joined_transcripts = "\n\n".join(st.session_state.transcripts)
         with st.expander('Show Transcription'):
             st.write("Transcription:", joined_transcripts)
         with st.spinner('Writing report...'):
-            report = get_report(transcript)
+            report = get_report(joined_transcripts)
         with st.expander('Show Report'):
             st.write("Report:", report)
 
