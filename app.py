@@ -8,10 +8,24 @@ from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 import streamlit as st
 # Set the working dir as the relative file path
-# WORKING_DIR = os.path.relpath(os.path.dirname(__file__))
-WORKING_DIR = os.path.dirname(__file__)
 OPENAI_API_KEY = st.secrets["OPENAI_KEY"]
-client = OpenAI(api_key=OPENAI_API_KEY) 
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+# Set the prompt for the report.
+TEXT_PROMPT = """You are an exceptional reporter.
+
+### Task
+You will be provided with a transcription or some audio messages. Your task is to process the transcriptions, returning the information on a specific format.
+
+### Expected output format
+The audio messages are from volunteers from "Fundación Sí", an NGO that does "recorridas", handing out food and talking to homeless people. The audio messages are reports of those "recorridas", saying who they saw, what they talked about, and who they didn't see.
+The written report should be an itemization on each person mentioned, re-organizing the information that is said in the audio messages.
+Make sure to take special note of anything important, leaving out anything not really important.
+Make sure to write the report in Argentinian Spanish!
+
+Transcription: {transcription}
+
+report: """
 
 # Step 1: Transcribe the audio files
 def transcribe_audio(audio_file_path):
@@ -27,11 +41,8 @@ def transcribe_audio(audio_file_path):
 # Step 2: Get the report with GPT-3.5
 
 def get_report(transcript):
-    with open(os.path.join(WORKING_DIR, 'instructions_V0.md'), 'r') as f:
-        prompt_text = f.read()
-    print(prompt_text)
     prompt = PromptTemplate(
-        template=prompt_text,
+        template=TEXT_PROMPT,
         input_variables=['transcription']
     )
     chain = LLMChain(
