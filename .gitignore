@@ -1,4 +1,6 @@
 test.py
-testing.mp3
+test_audios
 pipeline_testing.ipynb
 .env
+.streamlit/secrets.toml
+.DS_Store
