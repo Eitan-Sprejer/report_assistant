@@ -72,7 +72,7 @@ def main():
                 st.session_state.transcripts.append(transcript)
         joined_transcripts = "\n\n".join(st.session_state.transcripts)
         with st.expander('Show Transcription'):
-            st.write("Transcription:", joined_transcripts)
+            st.write("Transcription:\n", joined_transcripts)
         with st.spinner('Writing report...'):
             report = get_report(joined_transcripts)
         with st.expander('Show Report'):
